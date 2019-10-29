@@ -1,13 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-require('dotenv').config();
 const movieData = require('./movie-data-small');
 
 const app = express();
 
 app.use(morgan('dev'));
+app.use(helmet());
+app.use(cors());
+
 app.use(function validateBearerToken(req, res, next) {
   const authToken = req.get('Authorization');
   console.log('authToken: ' + authToken);
@@ -18,40 +21,38 @@ app.use(function validateBearerToken(req, res, next) {
   }
   next();
 });
-app.use(helmet());
-app.use(cors());
 
 app.get('/movie', (req, res) => {
-  let outputData;
+  let outputData = movieData;
   const filterGenre = () => {
     if (req.query.genre) {
-      outputData = movieData.filter(item =>
+      outputData = outputData.filter(item =>
         item.genre.toLowerCase().includes(req.query.genre)
       );
     }
   };
   const filterCountry = () => {
     if (req.query.country) {
-      outputData = movieData.filter(item =>
+      outputData = outputData.filter(item =>
         item.country.toLowerCase().includes(req.query.country)
       );
     }
   };
   const filterVote = () => {
     if (req.query.avg_vote) {
-      outputData = movieData.filter(
+      outputData = outputData.filter(
         item => item.avg_vote >= req.query.avg_vote
       );
     }
   };
-  const filterData = () => {
+  const filterMovies = () => {
     filterGenre();
     filterCountry();
     filterVote();
     return outputData;
   };
 
-  res.status(200).json(filterData());
+  res.status(200).json(filterMovies());
 });
 
 app.listen(8000, () => {
