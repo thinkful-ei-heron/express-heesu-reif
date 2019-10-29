@@ -12,10 +12,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/apps', (req, res) => {
-  // if params -> req string
-  // if params valid -> return array
-  // filtered via params
-  let filteredData;
   let sortedData;
 
   if ('sort' in req.query) {
@@ -27,20 +23,25 @@ app.get('/apps', (req, res) => {
       sortedData = appsData.sort((a, b) => (a.Rating > b.Rating ? 1 : -1));
     }
   } else {
-    // default list
     sortedData = appsData;
   }
 
   if ('genre' in req.query) {
-    if(['action', 'puzzle', 'strategy', 'casual', 'arcade', 'card'].indexOf(req.query.genre) >= 0) {
-      sortedData=sortedData.filter((item) => item.Genres.toLowerCase().includes(req.query.genre))
+    if (
+      ['action', 'puzzle', 'strategy', 'casual', 'arcade', 'card'].indexOf(
+        req.query.genre
+      ) >= 0
+    ) {
+      sortedData = sortedData.filter(item =>
+        item.Genres.toLowerCase().includes(req.query.genre)
+      );
     } else {
-      res.status(400).json({error: 'genre does not exist'});
+      res.status(400).json({ error: 'genre does not exist' });
+    }
   }
+  res.status(200).json(sortedData);
+});
 
-  res.send(sortedData);
-}});
-
-app.listen(9001, () => {
-  console.log('listening to port 9001');
+app.listen(8000, () => {
+  console.log('listening to port 8000');
 });
