@@ -9,8 +9,7 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(function validateBearerToken(req, res, next) {
-  // leaving this open is fine, I'm on windows and don't want to create a new env_var for this
-  const apiToken = 'f2234a8a-fa6b-11e9-8f0b-362b9e155667';
+  const apiToken = process.env.API_TOKEN;
   const authToken = req.get('Authorization');
   if (!authToken || authToken.split(' ')[1] !== apiToken) {
     return res.status(401).json({ error: 'Unauthorized request' });
