@@ -8,5 +8,9 @@ const app = express();
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-  res.send('shit works');
+  res.send('server works');
+});
+
+app.listen(9001, () => {
+  console.log('listening to port 9001');
 });
